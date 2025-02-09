@@ -51,5 +51,8 @@
   "repository": {
     "url": "https://github.com/oblador/react-native-vector-icons",
     "type": "git"
+  },
+  "dependencies": {
+    "@react-native-vector-icons/common": "workspace:^"
   }
 }

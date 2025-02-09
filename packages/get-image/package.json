@@ -1,12 +1,13 @@
 {
-  "name": "@react-native-vector-icons/fontawesome5",
-  "version": "5.15.4",
-  "description": "Fontawesome5 font for react native vector icons",
+  "name": "@react-native-vector-icons/get-image",
+  "version": "12.0.0-alpha.14",
+  "description": "Glyph to png conversion for react native vector icons",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
   "types": "./lib/typescript/commonjs/src/index.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "import": {
         "types": "./lib/typescript/module/src/index.d.ts",
@@ -19,14 +20,16 @@
     }
   },
   "files": [
+    "scripts",
     "src",
     "lib",
-    "glyphmaps",
-    "fonts",
     "android",
     "ios",
     "cpp",
     "*.podspec",
+    "react-native.config.js",
+    "!ios/generated",
+    "!android/generated",
     "!ios/build",
     "!android/build",
     "!android/gradle",
@@ -39,8 +42,10 @@
     "!**/.*"
   ],
   "scripts": {
-    "clean": "del-cli android/build ios/build lib",
-    "prepare": "bob build && ../../scripts/fix-glyphmaps.sh",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "prepare": "bob build",
+    "prepack": "cp ../../README.md .",
+    "postpack": "rm README.md",
     "watch": "onchange 'src/**' --initial -- yarn run prepare"
   },
   "keywords": [
@@ -59,14 +64,12 @@
     "icons",
     "vector",
     "retina",
-    "font",
-    "react-native-vector-icons-icon",
-    "fontawesome5"
+    "font"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/oblador/react-native-vector-icons.git",
-    "directory": "packages/fontawesome5"
+    "url": "git://github.com/oblador/react-native-vector-icons.git",
+    "directory": "packages/get-image"
   },
   "author": {
     "name": "Joel Arvidsson",
@@ -81,26 +84,28 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@react-native-vector-icons/common": "workspace:*"
+    "@react-native-community/cli-tools": "^15.1.2"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "5.15.4",
+    "@types/plist": "^3.0.5",
+    "@types/react": "^18.3.18",
     "del-cli": "^6.0.0",
     "onchange": "^7.1.0",
+    "react": "18.3.1",
+    "react-native": "0.76.5",
     "react-native-builder-bob": "^0.35.2",
+    "turbo": "^1.13.4",
     "typescript": "^5.7.2"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
   },
-  "engines": {
-    "node": ">= 18.0.0"
-  },
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
     "targets": [
+      "codegen",
       [
         "commonjs",
         {
@@ -122,8 +127,22 @@
       ]
     ]
   },
+  "codegenConfig": {
+    "name": "RNVectorIconsSpec",
+    "type": "all",
+    "jsSrcsDir": "src",
+    "outputDir": {
+      "ios": "ios/generated",
+      "android": "android/generated"
+    },
+    "android": {
+      "javaPackageName": "com.reactnativevectoricons.get_image"
+    },
+    "includesGeneratedCode": false
+  },
   "create-react-native-library": {
-    "type": "library",
+    "type": "module-mixed",
+    "languages": "kotlin-objc",
     "version": "0.41.2"
   }
 }

@@ -1,13 +1,14 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import React, { forwardRef, type Ref, useEffect } from 'react';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { PixelRatio, Platform, Text, type TextProps, type TextStyle, processColor } from 'react-native';
 
-import NativeIconAPI from './NativeVectorIcons';
 import createIconSourceCache from './create-icon-source-cache';
 import { dynamicLoader } from './dynamicLoading/dynamic-font-loading';
 import { isDynamicLoadingEnabled } from './dynamicLoading/dynamic-loading-setting';
 import type { FontSource } from './dynamicLoading/types';
-import ensureNativeModuleAvailable from './ensure-native-module-available';
+import { NativeIconAPI, ensureGetImageAvailable } from './get-image-library';
 
 export const DEFAULT_ICON_SIZE = 12;
 export const DEFAULT_ICON_COLOR = 'black';
@@ -158,7 +159,7 @@ export function createIconSet<GM extends Record<string, number>>(
     size = DEFAULT_ICON_SIZE,
     color: TextStyle['color'] = DEFAULT_ICON_COLOR,
   ) => {
-    ensureNativeModuleAvailable();
+    ensureGetImageAvailable();
 
     const glyph = resolveGlyph(name);
     const processedColor = processColor(color);
@@ -170,7 +171,8 @@ export function createIconSet<GM extends Record<string, number>>(
     }
 
     try {
-      const imagePath = NativeIconAPI.getImageForFontSync(
+      // biome-ignore lint/style/noNonNullAssertion: this is checked in ensureGetImageAvailable
+      const imagePath = NativeIconAPI!.getImageForFontSync(
         fontReference,
         glyph,
         size,
@@ -190,7 +192,7 @@ export function createIconSet<GM extends Record<string, number>>(
     size = DEFAULT_ICON_SIZE,
     color: TextStyle['color'] = DEFAULT_ICON_COLOR,
   ) => {
-    ensureNativeModuleAvailable();
+    ensureGetImageAvailable();
 
     const glyph = resolveGlyph(name);
     const processedColor = processColor(color);
@@ -202,7 +204,8 @@ export function createIconSet<GM extends Record<string, number>>(
     }
 
     try {
-      const imagePath = await NativeIconAPI.getImageForFont(
+      // biome-ignore lint/style/noNonNullAssertion: this is checked in ensureGetImageAvailable
+      const imagePath = await NativeIconAPI!.getImageForFont(
         fontReference,
         glyph,
         size,

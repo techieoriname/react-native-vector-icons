@@ -205,11 +205,6 @@ export default class extends Generator<Arguments> {
 
     packageJSON.version = `${version}${versionSuffix}`;
 
-    const commonPackageFile = this.destinationPath('../common/package.json');
-    const commonPackageJSON = JSON.parse(fs.readFileSync(commonPackageFile, 'utf8'));
-
-    packageJSON.dependencies['@react-native-vector-icons/common'] = `^${commonPackageJSON.version}`;
-
     if (data.dependencies) {
       Object.entries(data.dependencies).forEach(([depName, depVersion]) => {
         if (!depName.startsWith('@react-native-vector-icons')) {
