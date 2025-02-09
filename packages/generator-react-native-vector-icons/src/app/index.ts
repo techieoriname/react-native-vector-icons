@@ -18,12 +18,14 @@ interface Data {
   className: string;
   postScriptName: string;
   fontFileName: string;
+  androidName: string;
   dependencies: Record<string, string>;
   upstreamFont?: string | { registry?: string; packageName: string; versionRange: string; versionOnly?: boolean };
   packageJSON?: Record<string, Record<string, string>>;
   versionSuffix?: string;
   customReadme?: boolean;
   customSrc?: string | boolean;
+  copyCustomFonts?: boolean;
   source: string;
   customAssets?: boolean;
   commonPackage?: string;
@@ -121,7 +123,20 @@ export default class extends Generator<Arguments> {
       'tsconfig.json',
       'tsconfig.build.json',
       'babel.config.js',
+      'android/build.gradle',
+      'android/src/main/AndroidManifestNew.xml',
+      'android/src/main/AndroidManifest.xml',
     ];
+    files.push(['android/src/main/java/Module.kt', `android/src/main/java/VectorIcons${data.className}Module.kt`]);
+    files.push(['android/src/main/java/Package.kt', `android/src/main/java/VectorIcons${data.className}Package.kt`]);
+    files.push(['android/src/main/java/Spec.kt', `android/src/main/java/VectorIcons${data.className}Spec.kt`]);
+    files.push(['src/Native.ts', `src/NativeVectorIcons${data.className}.ts`]);
+
+    files.push(['src/Native.ts', `src/NativeVectorIcons${data.className}.ts`]);
+    files.push(['android/src/main/java/Module.kt', `android/src/main/java/VectorIcons${data.className}Module.kt`]);
+    files.push(['android/src/main/java/Package.kt', `android/src/main/java/VectorIcons${data.className}Package.kt`]);
+    files.push(['android/src/main/java/Spec.kt', `android/src/main/java/VectorIcons${data.className}Spec.kt`]);
+    files.push(['font.podspec', `react-native-vector-icons-${data.packageName}.podspec`]);
 
     if (data.customSrc === true) {
       // Do nothing
@@ -406,29 +421,31 @@ export default class extends Generator<Arguments> {
   _data() {
     // TODO: Use zod to vaidate the .yo-rc.json data
     const data = this.config.getAll() as unknown as Data;
+    // ant-design
     if (!data.packageName) {
       throw new Error('packageName is required');
     }
 
+    // Ant Design
     data.name ||= data.packageName
       .split('-')
       .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
       .join(' ');
-    data.buildSteps ||= {};
+    // AntDesign
     data.className ||= data.packageName
       .split('-')
       .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
       .join('');
-    data.postScriptName ||= data.packageName
-      .split('-')
-      .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-      .join('');
-    data.fontFileName ||= data.packageName
-      .split('-')
-      .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-      .join('');
+    // AntDesign
+    data.postScriptName ||= data.className;
+    data.fontFileName ||= data.className;
+    // ant_design
+    data.androidName = data.packageName.replaceAll('-', '_');
+
+    data.buildSteps ||= {};
     data.customReadme ||= false;
     data.customAssets ||= false;
+    data.copyCustomFonts ||= false;
     data.commonPackage ||= 'common';
     data.source = './src/index.ts';
     if (typeof data.customSrc === 'string') {
